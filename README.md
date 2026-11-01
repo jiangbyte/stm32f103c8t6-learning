@@ -36,6 +36,7 @@
 | Git | 克隆仓库与初始化 submodule |
 | CMake ≥ 3.20、Ninja | 配置与构建 |
 | Arm GNU Toolchain (`arm-none-eabi-gcc` 等) | 交叉编译 |
+| `gdb-multiarch`（或自带的 `arm-none-eabi-gdb`） | Cortex-Debug 客户端 |
 | OpenOCD | 烧录 / GDB server |
 | （可选）VS Code / Cursor + 推荐扩展 | 编辑、调试 |
 
@@ -46,6 +47,8 @@ sudo apt update
 sudo apt install -y git cmake ninja-build gcc-arm-none-eabi \
   binutils-arm-none-eabi gdb-multiarch openocd
 ```
+
+> Debian/Ubuntu 通常没有 `arm-none-eabi-gdb`。本模板在 `.vscode/settings.json` 中将 `cortex-debug.gdbPath` 设为 `gdb-multiarch`；说明见 [docs/cortex-debug-gdb-path.md](docs/cortex-debug-gdb-path.md)。
 
 ## 快速开始
 
@@ -71,13 +74,16 @@ cmake --build build -j
 ln -sf build/compile_commands.json compile_commands.json
 ```
 
-## 烧录
+## 烧录 / 直接运行（不调试）
 
 接好 ST-Link，确认 `openocd.cfg` 中接口与目标匹配后：
 
 ```bash
 openocd -f openocd.cfg -c "program build/firmware.elf verify reset exit"
 ```
+
+烧录并复位后，固件在板子上独立跑（例如 PC13 闪灯），**不需要**开调试会话。  
+在 IDE 里请运行任务 **Run on Target (Flash)**，不要按 F5（F5 会进入调试）。
 
 ## VS Code / Cursor
 
@@ -87,8 +93,16 @@ openocd -f openocd.cfg -c "program build/firmware.elf verify reset exit"
 |------|------|
 | 配置 | 任务 **CMake Configure** |
 | 编译 | 任务 **CMake Build**（默认构建任务） |
-| 烧录 | 任务 **Flash (OpenOCD)** |
-| 调试 | 启动配置 **Cortex Debug (OpenOCD ST-Link)** |
+| 直接运行（不要调试框） | 命令面板 → `Tasks: Run Task` → **Run on Target (Flash)** |
+| 调试（会出调试工具栏） | Run and Debug → **Cortex Debug (OpenOCD ST-Link)** → F5 |
+
+从 Run and Debug / F5 启动**一定会**出现顶部调试框，这是 IDE 行为，不是没配好。只要烧录请用任务，不要用 F5。详见 [docs/run-vs-debug.md](docs/run-vs-debug.md)。
+
+## 常见问题
+
+- 改名/搬家后 clangd 报找不到 `stm32f1xx.h`，或 cmake 提示缓存路径不一致：见 [docs/rename-or-move-project.md](docs/rename-or-move-project.md)。
+- Cortex-Debug 报找不到 `arm-none-eabi-gdb`：见 [docs/cortex-debug-gdb-path.md](docs/cortex-debug-gdb-path.md)。
+- F5 后总是进入调试、想直接让板子跑：见 [docs/run-vs-debug.md](docs/run-vs-debug.md)。
 
 ## 从模板开新项目
 

@@ -29,5 +29,8 @@
     "*.h": "c",
     "*.c": "c"
   },
-  "C_Cpp.intelliSenseEngine": "disabled"
+  "C_Cpp.intelliSenseEngine": "disabled",
+
+  // Debian/Ubuntu 一般不提供 arm-none-eabi-gdb，用 multiarch 调试 Cortex-M
+  "cortex-debug.gdbPath": "gdb-multiarch"
 }

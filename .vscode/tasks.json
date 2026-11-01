@@ -3,6 +3,7 @@
   "tasks": [
     {
       "label": "CMake Configure",
+      "detail": "用工具链重新配置 build/（首次或改 CMakeLists 后）",
       "type": "shell",
       "command": "cmake",
       "args": [
@@ -20,6 +21,7 @@
     },
     {
       "label": "CMake Build",
+      "detail": "编译固件，生成 build/firmware.elf（默认 Ctrl+Shift+B）",
       "type": "shell",
       "command": "cmake",
       "args": ["--build", "build", "-j"],
@@ -33,7 +35,8 @@
       "problemMatcher": ["$gcc"]
     },
     {
-      "label": "Flash (OpenOCD)",
+      "label": "Run on Target (Flash)",
+      "detail": "编译并烧录，复位后板子独立运行（不进入调试）",
       "type": "shell",
       "command": "openocd",
       "args": [
