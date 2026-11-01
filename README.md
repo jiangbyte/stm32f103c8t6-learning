@@ -21,6 +21,7 @@
 ├── Drivers/                      # git submodule（CMSIS / HAL）
 ├── cmake/gcc-arm-none-eabi.cmake # 交叉编译工具链
 ├── docs/                         # 补充说明
+├── scripts/new-project.sh        # 一键从模板创建新工程
 ├── startup_stm32f103xb.s         # 启动文件
 ├── STM32F103C8Tx_FLASH.ld        # 链接脚本
 ├── openocd.cfg                   # ST-Link + stm32f1x
@@ -106,9 +107,46 @@ openocd -f openocd.cfg -c "program build/firmware.elf verify reset exit"
 
 ## 从模板开新项目
 
-1. 复制或 fork 本仓库，按需改仓库名与目录名。
-2. 改名 / 搬家后务必删除旧 `build/` 再重新 cmake，否则会出现头文件红线或 CMake 缓存路径错误。详见 [docs/rename-or-move-project.md](docs/rename-or-move-project.md)。
-3. 在 `Core/Src/main.c` 中编写业务；需要更多 HAL 模块时，在 `Core/Inc/stm32f1xx_hal_conf.h` 打开对应宏，并在 `CMakeLists.txt` 的 `HAL_SOURCES` 中加入源文件。
+推荐用脚本（默认创建到上一级，例如 `../my-app`），也支持手搓多种方式。
+
+### 脚本（多种 `--mode`）
+
+```bash
+# 默认：本地复制（rsync；无 rsync 时自动改 tar/cp），离线可用
+./scripts/new-project.sh my-app
+
+./scripts/new-project.sh --mode cp my-app              # 强制 cp/tar
+./scripts/new-project.sh --mode git-local my-app       # git clone 本地路径 + submodule --reference
+./scripts/new-project.sh --mode git my-app             # 从 GitHub clone（需网络）
+./scripts/new-project.sh --mode git --keep-origin my-app
+
+cd ../my-app
+```
+
+| `--mode` | 说明 |
+|----------|------|
+| `copy` / `rsync`（默认） | 本地文件复制，含已检出 Drivers，不访问网络 |
+| `cp` | 同上，用 `tar`/`cp` 流水线 |
+| `git-local` | `git clone` 本仓库路径，submodule 尽量引用本地对象 |
+| `git` / `clone` | `git clone --recurse-submodules` 远程（可用 `--remote <url>`） |
+
+默认会删掉新工程的 `origin`（可用 `--keep-origin` 保留），并清掉 `build/`、`.cache`、`compile_commands.json`。
+
+### 不经过脚本
+
+```bash
+# 远程直接用 git
+git clone --recurse-submodules \
+  git@github.com:jiangbyte/stm32f103c8t6-template.git my-app
+
+# 本地已有模板时
+cp -a stm32f103c8t6-template my-app
+# 或: rsync -a --exclude build --exclude .cache stm32f103c8t6-template/ my-app/
+rm -rf my-app/build my-app/.cache my-app/compile_commands.json
+```
+
+然后自行 cmake，在 `Core/Src/main.c` 写业务。需要更多 HAL 模块时：在 `Core/Inc/stm32f1xx_hal_conf.h` 打开对应宏，并在 `CMakeLists.txt` 的 `HAL_SOURCES` 中加入源文件。  
+改名/搬家后勿复用旧 `build/`，见 [docs/rename-or-move-project.md](docs/rename-or-move-project.md)。
 
 ## 许可证
 
