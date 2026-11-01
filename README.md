@@ -7,7 +7,7 @@
 - 目标器件：`STM32F103xB`（Cortex-M3，64KB Flash / 20KB RAM）
 - 构建：CMake + Ninja + `arm-none-eabi-gcc`
 - 驱动：ST 官方 CMSIS Core / Device F1、STM32F1xx HAL（子模块）
-- 示例：CMSIS 寄存器翻转 PC13 LED（可按注释切换到 HAL）
+- 案例：业务写在 `Core/Src/main.c`，完成后归档到 `cases/`（不参与编译）
 - 调试：OpenOCD + ST-Link（SWD），附带 Cortex-Debug 配置
 - 语言服务：导出 `compile_commands.json`，配合 clangd
 
@@ -17,7 +17,10 @@
 .
 ├── Core/
 │   ├── Inc/stm32f1xx_hal_conf.h   # HAL 裁剪配置
-│   └── Src/main.c                # 唯一自写业务入口
+│   └── Src/main.c                # 当前生效的业务入口（CMake 只编此文件）
+├── cases/                        # 案例归档（按目录存放，不参与编译）
+│   └── 01-PA0软件PWM呼吸灯/
+│       └── main.c
 ├── Drivers/                      # git submodule（CMSIS / HAL）
 ├── cmake/gcc-arm-none-eabi.cmake # 交叉编译工具链
 ├── docs/                         # 补充说明
@@ -29,6 +32,14 @@
 ├── LICENSE                       # 本模板 MIT
 └── README.md
 ```
+
+## 案例
+
+当前生效代码在 `Core/Src/main.c`；做完一个案例后复制到 `cases/<编号-标题>/main.c` 归档，再改 `main.c` 写下一个。
+
+| 编号 | 目录 | 说明 |
+|------|------|------|
+| 01 | [cases/01-PA0软件PWM呼吸灯](cases/01-PA0软件PWM呼吸灯) | CMSIS 寄存器 · PA0 软件 PWM 呼吸灯 |
 
 ## 依赖
 
