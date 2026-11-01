@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Cortex Debug (OpenOCD ST-Link)",
+      "type": "cortex-debug",
+      "request": "launch",
+      "servertype": "openocd",
+      "cwd": "${workspaceFolder}",
+      "executable": "${workspaceFolder}/build/firmware.elf",
+      "device": "STM32F103C8",
+      "configFiles": ["openocd.cfg"],
+      "runToEntryPoint": "main",
+      "showDevDebugOutput": "raw",
+      "preLaunchTask": "CMake Build"
+    }
+  ]
+}

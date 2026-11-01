@@ -1,0 +1,33 @@
+{
+  "cmake.configureOnOpen": true,
+  "cmake.generator": "Ninja",
+  "cmake.buildDirectory": "${workspaceFolder}/build",
+  "cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json",
+  "cmake.configureSettings": {
+    "CMAKE_TOOLCHAIN_FILE": "${workspaceFolder}/cmake/gcc-arm-none-eabi.cmake",
+    "CMAKE_BUILD_TYPE": "Debug"
+  },
+
+  "clangd.path": "clangd",
+  "clangd.arguments": [
+    "--compile-commands-dir=${workspaceFolder}/build",
+    "--background-index",
+    "--header-insertion=never",
+    "--query-driver=/usr/bin/arm-none-eabi-gcc,/usr/bin/arm-none-eabi-g++"
+  ],
+  "clangd.fallbackFlags": [
+    "-DSTM32F103xB",
+    "-DUSE_HAL_DRIVER",
+    "-I${workspaceFolder}/Core/Inc",
+    "-I${workspaceFolder}/Drivers/CMSIS/Core/CMSIS/Core/Include",
+    "-I${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+    "-I${workspaceFolder}/Drivers/STM32F1xx_HAL_Driver/Inc",
+    "-I${workspaceFolder}/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy"
+  ],
+
+  "files.associations": {
+    "*.h": "c",
+    "*.c": "c"
+  },
+  "C_Cpp.intelliSenseEngine": "disabled"
+}
